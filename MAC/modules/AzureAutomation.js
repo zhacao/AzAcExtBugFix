@@ -301,8 +301,12 @@ var createLocalRunbook = function (runbookName, runbookType, existing=false, pub
         } else if(runbookType == 'Python' || runbookType == 'Python3') {
           var path = vscode.workspace.rootPath + `/${runbookName}.py`
         }
-
-        fs.writeFile(path, body, function() {
+        if( runbookType.includes("Workflow") == true ) {
+          var sampleworkflow = 'workflow ' + `${runbookName}` + ' {\n     \n}'
+        }else {
+          var sampleworkflow=body
+        }
+        fs.writeFile(path, sampleworkflow, function() {
           vscode.workspace.openTextDocument(path).then(doc => {
             vscode.window.showTextDocument(doc)
             setTimeout(function () {
@@ -324,7 +328,7 @@ var createLocalRunbook = function (runbookName, runbookType, existing=false, pub
           LogEngine.writeLog('createLocalRunbook', response)
           return vscode.window.showErrorMessage('Could not get template from Azure Cloud.')
         }
-        if(runbookType == 'PowerShell' || runbookType == 'PowerShell7' || runbookType == 'PowerShellWorkflow') {
+        if( runbookType.includes("PowerShell") == true ) {
           var path = vscode.workspace.rootPath + `/${runbookName}.ps1`
         } else if(runbookType == 'Python' || runbookType == 'Python3') {
           var path = vscode.workspace.rootPath + `/${runbookName}.py`
@@ -341,13 +345,17 @@ var createLocalRunbook = function (runbookName, runbookType, existing=false, pub
       })
     })
   } else {
-    if(runbookType == 'PowerShell' || runbookType == 'PowerShell7' || runbookType == 'PowerShellWorkflow') {
+    if( runbookType.includes("PowerShell") == true ) {
       var path = vscode.workspace.rootPath + `/${runbookName}.ps1`
     } else if(runbookType == 'Python' || runbookType == 'Python3') {
       var path = vscode.workspace.rootPath + `/${runbookName}.py`
     }
-
-    fs.writeFile(path, "", function() {
+    if( runbookType.includes("Workflow") == true ) {
+      var sampleworkflow = 'workflow ' + `${runbookName}` + ' {\n     \n}'
+    }else {
+      var sampleworkflow=''
+    }
+    fs.writeFile(path, sampleworkflow, function() {
       vscode.workspace.openTextDocument(path).then(doc => {
         vscode.window.showTextDocument(doc)
         setTimeout(function () {
