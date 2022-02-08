@@ -202,7 +202,11 @@ var createAzureRunbook = function (runbookType, runbookRuntime, next) {
   if(runbookType == 'PowerShell') {
     if(runbookRuntime.replace(' (preview)', '') == '7.1')
       runbookType = 'PowerShell7'
-  } else {
+  } 
+  if (runbookType == 'PowerShell Workflow') {
+      runbookType = 'PowerShellWorkflow'
+  }
+  if ( runbookType == 'Python') {
     if(runbookRuntime.replace(' (preview)', '') == '3.8.0') {
       runbookType = 'Python3'
     } else {
@@ -292,12 +296,12 @@ var createLocalRunbook = function (runbookName, runbookType, existing=false, pub
           LogEngine.writeLog('createLocalRunbook', response)
           return vscode.window.showErrorMessage('Could not get runbook from Azure Cloud. Error: ' + error.message)
         }
-        if(runbookType == 'PowerShell' || runbookType == 'PowerShell7') {
+        if( runbookType.includes("PowerShell") == true ) {
           var path = vscode.workspace.rootPath + `/${runbookName}.ps1`
         } else if(runbookType == 'Python' || runbookType == 'Python3') {
           var path = vscode.workspace.rootPath + `/${runbookName}.py`
         }
-        
+
         fs.writeFile(path, body, function() {
           vscode.workspace.openTextDocument(path).then(doc => {
             vscode.window.showTextDocument(doc)
@@ -320,7 +324,7 @@ var createLocalRunbook = function (runbookName, runbookType, existing=false, pub
           LogEngine.writeLog('createLocalRunbook', response)
           return vscode.window.showErrorMessage('Could not get template from Azure Cloud.')
         }
-        if(runbookType == 'PowerShell' || runbookType == 'PowerShell7') {
+        if(runbookType == 'PowerShell' || runbookType == 'PowerShell7' || runbookType == 'PowerShellWorkflow') {
           var path = vscode.workspace.rootPath + `/${runbookName}.ps1`
         } else if(runbookType == 'Python' || runbookType == 'Python3') {
           var path = vscode.workspace.rootPath + `/${runbookName}.py`
@@ -337,7 +341,7 @@ var createLocalRunbook = function (runbookName, runbookType, existing=false, pub
       })
     })
   } else {
-    if(runbookType == 'PowerShell' || runbookType == 'PowerShell7') {
+    if(runbookType == 'PowerShell' || runbookType == 'PowerShell7' || runbookType == 'PowerShellWorkflow') {
       var path = vscode.workspace.rootPath + `/${runbookName}.ps1`
     } else if(runbookType == 'Python' || runbookType == 'Python3') {
       var path = vscode.workspace.rootPath + `/${runbookName}.py`
