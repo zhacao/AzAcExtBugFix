@@ -209,20 +209,28 @@ var getHybridWorkerGroups = function (token, next) {
       } else {
         var returnArray = []
         _.forEach(bodyParsed.value, function (value) {
-          var test = {
-            'description': '',
-            'detail': value.name,
-            'label': value.name
+          if ( _.groupType == 'User') {
+            var test = {
+              'description': '',
+              'detail': value.name,
+              'label': value.name
+            }
+            returnArray.push(test)
           }
-          returnArray.push(test)
         })
         var test = {
           'description': '',
           'detail': '',
-          'label': 'Azure'
+          'label': 'Azure Worker'
         }
         returnArray.push(test)
-        next(returnArray)
+        
+        if (returnArray.length < 2 ) {
+          next(false)
+        } else {
+          next(returnArray)
+        }
+ 
       }
     }
   })
